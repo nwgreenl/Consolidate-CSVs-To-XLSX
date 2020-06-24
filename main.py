@@ -19,7 +19,7 @@ outputExt = "xlsx"
 outputFile = "%s/%s/%s.%s" % (cwd, outputDirName, outputFileName, outputExt)
 
 # sheet name regex
-legalChars = re.compile("[^a-zA-Z0-9]")
+illegalChars = re.compile("[^a-zA-Z0-9]")
 
 # consolidate
 print("Running...\n")
@@ -27,7 +27,7 @@ with pd.ExcelWriter(outputFile, engine="xlsxwriter") as writer:
     for file in files:
         # sheet names must be <= 31 chars and cannot contain "\ / * ? : ,"
         # opting to remove any char that isn't a word or digit
-        fileNameForSheet = legalChars.sub("", os.path.basename(file)).replace("csv", "")[:31]
+        fileNameForSheet = illegalChars.sub("", os.path.basename(file)).replace("csv", "")[:31]
         
         df = pd.read_csv(file)
         df.to_excel(writer, sheet_name=fileNameForSheet, index=False)
