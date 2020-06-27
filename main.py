@@ -23,13 +23,17 @@ def get_outputdir(dirName="output"):
     return output_dir
 
 # output file 
-def get_outputfile(fileName="consolidated", dirName="output"):
+def get_outputfile(fileName="consolidated", dirName="output", append_date=True):
     output_ext = "xlsx"
     output_dir = get_outputdir(dirName)
     output_date = datetime.datetime.now().strftime("%m-%d-%Y_%I-%M") 
 
-    output_file_name = "%s_%s" % (fileName, output_date)
-    output_file = "%s/%s.%s" % (output_dir, output_file_name, output_ext)
+    if append_date:
+        output_filename = "%s_%s" % (fileName, output_date)
+    else:
+        output_filename = "%s_%s" % fileName
+
+    output_file = "%s/%s.%s" % (output_dir, output_filename, output_ext)
     
     return output_file
 
@@ -58,10 +62,10 @@ def consolidate_files(files, output_file):
                 for file in files:
                     # sheet names must be <= 31 chars and cannot contain "\ / * ? : ,"
                     # opting to remove any char that isn't a word or digit
-                    file_name_for_sheet = illegal_chars.sub("", os.path.basename(file)).replace("csv", "")[:31]
+                    filename_for_sheet = illegal_chars.sub("", os.path.basename(file)).replace("csv", "")[:31]
                     
                     df = pd.read_csv(file)
-                    df.to_excel(writer, sheet_name=file_name_for_sheet, header=False, index=False)
+                    df.to_excel(writer, sheet_name=filename_for_sheet, header=False, index=False)
 
         # success message
         is_input_plural = "s" if len(files) > 1 else ""
