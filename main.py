@@ -14,8 +14,8 @@ def get_files():
     return list(files)
 
 # output dir (assumes it's in root folder)
-def get_outputdir(dirName="output"):
-    output_dir = "%s/%s" % (cwd, dirName)
+def get_outputdir(dir_name="output"):
+    output_dir = "%s/%s" % (cwd, dir_name)
     
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
@@ -23,15 +23,15 @@ def get_outputdir(dirName="output"):
     return output_dir
 
 # output file 
-def get_outputfile(fileName="consolidated", dirName="output", append_date=True):
+def get_outputfile(filename="consolidated", dir_name="output", append_date=True):
     output_ext = "xlsx"
-    output_dir = get_outputdir(dirName)
+    output_dir = get_outputdir(dir_name)
     output_date = datetime.datetime.now().strftime("%m-%d-%Y_%I-%M") 
 
     if append_date:
-        output_filename = "%s_%s" % (fileName, output_date)
+        output_filename = "%s_%s" % (filename, output_date)
     else:
-        output_filename = "%s_%s" % fileName
+        output_filename = "%s_%s" % filename
 
     output_file = "%s/%s.%s" % (output_dir, output_filename, output_ext)
     
