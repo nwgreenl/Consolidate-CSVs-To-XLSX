@@ -1,12 +1,15 @@
 import datetime, os, re, sys, pandas as pd
 from tkinter import filedialog
+from tkinter import *
 
 # cwd
 cwd = os.getcwd()
 
 # get files via tkinter filedialog
 def get_files():
+    root = Tk()
     files = filedialog.askopenfilenames(initialdir=cwd, title="Select File", filetypes=[("CSV Files", ".csv")])
+    root.withdraw()
     
     if len(files) == 0:
         sys.exit("\nNo Files Selected... Goodbye!\n")
@@ -65,7 +68,7 @@ def consolidate_files(files, output_file):
                     filename_for_sheet = illegal_chars.sub("", os.path.basename(file)).replace("csv", "")[:31]
                     
                     df = pd.read_csv(file)
-                    df.to_excel(writer, sheet_name=filename_for_sheet, header=False, index=False)
+                    df.to_excel(writer, sheet_name=filename_for_sheet, index=False)
 
         # success message
         is_input_plural = "s" if len(files) > 1 else ""
