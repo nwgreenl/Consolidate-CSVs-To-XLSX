@@ -14,5 +14,11 @@ Simple python script that consolidates multiple CSVs into a single Excel file (w
 ### Usage
 Run `main.py` and select the CSVs you wish to consolidate via the file dialog. 
 
-- Customize output directory & file name via `get_outputfile(filename, dir_name, append_date)`
+### Customization
+Output directory & file name via the final call to `get_outputfile()`
+
 - Defaults are `("consolidated", "output", True)`
+
+Header styling via `header_format`. The spec can be found [here](https://xlsxwriterlua.readthedocs.io/working_with_formats.html)
+
+- Defaults are set to be center alignment (vertical and horizontal), no borders, bold text, & text wrapping

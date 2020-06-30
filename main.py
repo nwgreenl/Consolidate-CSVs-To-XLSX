@@ -58,9 +58,16 @@ def progressbar(it, prefix="Running: ", size=50, file=sys.stdout):
 def consolidate_files(files, output_file):  
     # sheet name regex
     illegal_chars = re.compile("[^a-zA-Z0-9]")
-
+    
     try:        
-        with pd.ExcelWriter(output_file, engine="xlsxwriter") as writer:
+        with pd.ExcelWriter(output_file, engine="xlsxwriter", options={"strings_to_numbers": True}) as writer:
+            header_format = writer.book.add_format({
+                "bold": True,
+                "text_wrap": True,
+                "align": "center",
+                "valign": "vcenter",
+                "border": 0
+            })
             for i in progressbar(range(len(files))): 
                 for file in files:
                     # sheet names must be <= 31 chars and cannot contain "\ / * ? : ,"
@@ -68,12 +75,15 @@ def consolidate_files(files, output_file):
                     filename_for_sheet = illegal_chars.sub("", os.path.basename(file)).replace("csv", "")[:31]
                     
                     df = pd.read_csv(file)
-                    df.to_excel(writer, sheet_name=filename_for_sheet, index=False)
+                    df.to_excel(writer, sheet_name=filename_for_sheet, header=False, index=False, startrow=1)
+                    
+                    for col_num, value in enumerate(df.columns.values):
+                        writer.sheets[filename_for_sheet].write(0, col_num, value, header_format)
 
         # success message
         is_input_plural = "s" if len(files) > 1 else ""
 
-        print("\nSuccessfully created '%s' using the following CSV%s:" % (os.path.basename(output_file), is_input_plural))
+        print("\nSuccessfully created '%s' at %s using the following CSV%s:" % (os.path.basename(output_file), os.path.dirname(output_file), is_input_plural))
         for file in files:
             print("  - %s" % os.path.basename(file))    
 
@@ -82,4 +92,5 @@ def consolidate_files(files, output_file):
         print(e)
 
 # do the things
+# customize output file here
 consolidate_files(get_files(), get_outputfile())
